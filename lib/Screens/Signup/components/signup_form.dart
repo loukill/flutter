@@ -1,53 +1,130 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/services/userservice.dart';
 
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Login/login_screen.dart';
 
-class SignUpForm extends StatelessWidget {
+class SignUpForm extends StatefulWidget {
   const SignUpForm({
     Key? key,
+    required this.userService,
   }) : super(key: key);
+
+  final UserService userService;
+
+  @override
+  _SignUpFormState createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
+  final double defaultPadding = 16.0;
+  final _formKey = GlobalKey<FormState>();
+
+  String? name;
+  String? lastname;
+  String? phoneNumber;
+  String? password;
+  String? confirmPassword;
 
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Column(
         children: [
-          TextFormField(
-            keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.next,
-            cursorColor: kPrimaryColor,
-            onSaved: (email) {},
-            decoration: const InputDecoration(
-              hintText: "Your email",
-              prefixIcon: Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.person),
+          Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              cursorColor: kPrimaryColor,
+              onSaved: (value) => name = value,
+              decoration: const InputDecoration(
+                hintText: "Name",
+                prefixIcon: Icon(Icons.person),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+            padding: EdgeInsets.all(defaultPadding),
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              cursorColor: kPrimaryColor,
+              onSaved: (value) => lastname = value,
+              decoration: const InputDecoration(
+                hintText: "Lastname",
+                prefixIcon: Icon(Icons.person),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: TextFormField(
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.next,
+              cursorColor: kPrimaryColor,
+              onSaved: (value) => phoneNumber = value,
+              decoration: const InputDecoration(
+                hintText: "Phone Number",
+                prefixIcon: Icon(Icons.phone),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(defaultPadding),
             child: TextFormField(
               textInputAction: TextInputAction.done,
               obscureText: true,
               cursorColor: kPrimaryColor,
+              onSaved: (value) => password = value,
               decoration: const InputDecoration(
-                hintText: "Your password",
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
-                ),
+                hintText: "Password",
+                prefixIcon: Icon(Icons.lock),
               ),
             ),
           ),
-          const SizedBox(height: defaultPadding / 2),
-          ElevatedButton(
-            onPressed: () {},
-            child: Text("Sign Up".toUpperCase()),
+          Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child: TextFormField(
+              textInputAction: TextInputAction.done,
+              obscureText: true,
+              cursorColor: kPrimaryColor,
+              onSaved: (value) => confirmPassword = value,
+              decoration: const InputDecoration(
+                hintText: "Confirm Password",
+                prefixIcon: Icon(Icons.lock),
+              ),
+            ),
           ),
-          const SizedBox(height: defaultPadding),
+          SizedBox(height: defaultPadding / 2),
+          Padding(
+            padding: EdgeInsets.all(defaultPadding),
+            child:ElevatedButton(
+  onPressed: () {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      if (password != confirmPassword) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Passwords do not match")),
+        );
+        return;
+      }
+      // Call registerUser with collected data
+      widget.userService.registerUser(
+        name ?? '', // Using the null-aware operator to ensure non-null values are passed
+        lastname ?? '',
+        phoneNumber ?? '',
+        password ?? '',
+      );
+    }
+  },
+  child: Text("Sign Up".toUpperCase()),
+),
+
+          ),
+          SizedBox(height: defaultPadding),
           AlreadyHaveAnAccountCheck(
             login: false,
             press: () {

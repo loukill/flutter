@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/constants.dart';
 import 'package:flutter_auth/responsive.dart';
+import 'package:flutter_auth/services/userservice.dart';
 import '../../components/background.dart';
 import 'components/sign_up_top_image.dart';
 import 'components/signup_form.dart';
+ // Import UserService (adjust the import according to your project structure)
 
 class SignUpScreen extends StatelessWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  final UserService userService;
+
+  const SignUpScreen({Key? key, required this.userService}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Background(
+    return Background(
       child: SingleChildScrollView(
         child: Responsive(
-          mobile: MobileSignupScreen(),
+          mobile: MobileSignupScreen(userService: userService),
           desktop: Row(
             children: [
               Expanded(
@@ -25,7 +29,7 @@ class SignUpScreen extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: 450,
-                      child: SignUpForm(),
+                      child: SignUpForm(userService: userService),
                     ),
                     SizedBox(height: defaultPadding / 2),
                     // SocalSignUp()
@@ -41,13 +45,16 @@ class SignUpScreen extends StatelessWidget {
 }
 
 class MobileSignupScreen extends StatelessWidget {
+  final UserService userService;
+
   const MobileSignupScreen({
     Key? key,
+    required this.userService,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SignUpScreenTopImage(),
@@ -56,7 +63,7 @@ class MobileSignupScreen extends StatelessWidget {
             Spacer(),
             Expanded(
               flex: 8,
-              child: SignUpForm(),
+              child: SignUpForm(userService: userService),
             ),
             Spacer(),
           ],

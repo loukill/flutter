@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/services/userservice.dart';
 
 import '../../../constants.dart';
 import '../../Login/login_screen.dart';
 import '../../Signup/signup_screen.dart';
 
 class LoginAndSignupBtn extends StatelessWidget {
+  final UserService userService;
+
   const LoginAndSignupBtn({
-    Key? key,
+    Key? key, required this.userService,
   }) : super(key: key);
 
   @override
@@ -35,7 +38,7 @@ class LoginAndSignupBtn extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) {
-                  return const SignUpScreen();
+                  return SignUpScreen(userService: userService); // Pass the userService here
                 },
               ),
             );

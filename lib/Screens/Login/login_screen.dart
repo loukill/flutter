@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/services/userservice.dart'; // Import your AuthService file
 import 'package:flutter_auth/responsive.dart';
 
 import '../../components/background.dart';
@@ -10,10 +11,12 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Background(
+  
+
+    return Background(
       child: SingleChildScrollView(
         child: Responsive(
-          mobile: MobileLoginScreen(),
+          mobile: MobileLoginScreen(userService: UserService()),
           desktop: Row(
             children: [
               Expanded(
@@ -25,7 +28,7 @@ class LoginScreen extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: 450,
-                      child: LoginForm(),
+                      child: LoginForm(userService: UserService()),
                     ),
                   ],
                 ),
@@ -39,13 +42,16 @@ class LoginScreen extends StatelessWidget {
 }
 
 class MobileLoginScreen extends StatelessWidget {
+  final UserService userService;
+
   const MobileLoginScreen({
     Key? key,
+    required this.userService,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         LoginScreenTopImage(),
@@ -54,7 +60,7 @@ class MobileLoginScreen extends StatelessWidget {
             Spacer(),
             Expanded(
               flex: 8,
-              child: LoginForm(),
+              child: LoginForm(userService: userService),
             ),
             Spacer(),
           ],

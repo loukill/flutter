@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/services/userservice.dart';
 
 import '../../components/background.dart';
 import '../../responsive.dart';
@@ -6,11 +7,13 @@ import 'components/login_signup_btn.dart';
 import 'components/welcome_image.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  final UserService userService;
+
+  const WelcomeScreen({Key? key, required this.userService}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Background(
+    return Background(
       child: SingleChildScrollView(
         child: SafeArea(
           child: Responsive(
@@ -26,14 +29,14 @@ class WelcomeScreen extends StatelessWidget {
                     children: [
                       SizedBox(
                         width: 450,
-                        child: LoginAndSignupBtn(),
+                        child: LoginAndSignupBtn(userService: userService),
                       ),
                     ],
                   ),
                 ),
               ],
             ),
-            mobile: MobileWelcomeScreen(),
+            mobile: MobileWelcomeScreen(userService: userService),
           ),
         ),
       ),
@@ -42,13 +45,13 @@ class WelcomeScreen extends StatelessWidget {
 }
 
 class MobileWelcomeScreen extends StatelessWidget {
-  const MobileWelcomeScreen({
-    Key? key,
-  }) : super(key: key);
+  final UserService userService;
+
+  MobileWelcomeScreen({Key? key, required this.userService}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         WelcomeImage(),
@@ -57,7 +60,7 @@ class MobileWelcomeScreen extends StatelessWidget {
             Spacer(),
             Expanded(
               flex: 8,
-              child: LoginAndSignupBtn(),
+              child: LoginAndSignupBtn(userService: userService),
             ),
             Spacer(),
           ],
