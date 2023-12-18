@@ -1,95 +1,56 @@
+import 'dart:html' as html;
+
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_dashboard/pages/category/widgets/category_edit_dialog.dart';
+import 'package:flutter_dashboard/services/category_service.dart';
 import 'dart:convert';
 
-import '../../../model/category_model.dart';
-
 class CustomDataTable extends StatefulWidget {
+   final List<Map<String, dynamic>> categories;
+  final Function(Map<String, dynamic>) onCategoryAdded;
+
+   const CustomDataTable({Key? key, required this.categories, required this.onCategoryAdded}) : super(key: key);
+
   @override
   _CustomDataTableState createState() => _CustomDataTableState();
 }
 
 class _CustomDataTableState extends State<CustomDataTable> {
-  List<Map<String, String>> data = [];
+  List<Map<String, dynamic>> data = [];
 
-  final TextEditingController editingController = TextEditingController();
-  late Future<Category> _futureCategory;
-
-  Future<Category> updateCategory(String categoryId,String title) async {
-    final response = await http.put(
-      Uri.parse('http://localhost:3000/category/$categoryId'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'title': title,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      return Category.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to update cateory.');
-    }
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
   }
 
+  void addCategory(Map<String, dynamic> newCategory) {
+    widget.onCategoryAdded(newCategory); // Utiliser le callback passé au widget
+  }
+  
 
-  Future<void> deleteCategory(String categoryId) async {
-    final Uri uri = Uri.parse('http://localhost:3000/category/$categoryId');
-
+  Future<void> fetchData() async {
     try {
-      final http.Response response = await http.delete(uri);
-      if (response.statusCode == 200) {
-        // Category deleted successfully
-        print('Category deleted successfully');
-      } else if (response.statusCode == 404) {
-        // Category not found
-        print('Category not found');
-      } else {
-        // Handle other errors
-        print('Failed to delete category: ${response.body}');
-      }
-    } catch (error) {
-      print('Error deleting category: $error');
+      data = await CategoryService.getCategories();
+      setState(() {});
+    } catch (e) {
+      // Gérer l'erreur
+      print('Error fetching data: $e');
     }
   }
 
-  void handleEdit(String categoryId, String categoryTitle) {
-    TextEditingController editingController = TextEditingController(text: categoryTitle);
 
+  void handleEdit(String categoryId, String currentTitle) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Edit Category'),
-          content: Column(
-            children: [
-              // TextField for editing the title
-              TextField(
-                controller: editingController,
-                onChanged: (value) {
-                  // Update the title as the user types
-                  // No need to use setState here
-                  print('Editing title: $value');
-                },
-                decoration: InputDecoration(labelText: 'New Title'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  await updateCategory(categoryId, editingController.text);
-
-                  fetchData(); // Refresh data after update
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: Text('Save'),
-              ),
-            ],
-          ),
+        return CategoryEditDialog(
+          categoryId: categoryId,
+          initialTitle: currentTitle,
+          onCategoryUpdated: () {
+            fetchData();
+          },
         );
       },
     );
@@ -105,10 +66,9 @@ class _CustomDataTableState extends State<CustomDataTable> {
           actions: [
             TextButton(
               onPressed: () async {
-                // Call the deleteCategory function here
-                await deleteCategory(categoryId);
-                fetchData(); // Refresh data after deletion
                 Navigator.pop(context); // Close the dialog
+                await CategoryService.deleteCategory(categoryId);
+                fetchData(); // Refresh data after deletion
               },
               child: Text('Yes'),
             ),
@@ -125,60 +85,47 @@ class _CustomDataTableState extends State<CustomDataTable> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    fetchData();
-  }
-
-  Future<void> fetchData() async {
-    final response = await http.get(Uri.parse('http://localhost:3000/category'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = jsonDecode(response.body);
-      print('Fetched data: $responseData'); // Add this line to print data
-      setState(() {
-        data = responseData.map((entry) => Map<String, String>.from(entry)).toList();
-      });
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
-
-
-  @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: DataTable(
+        columnSpacing: 40, // Espacement entre les colonnes
+        dataRowHeight: 100,
         columns: const [
-          DataColumn(label: Text('ID')),
+          DataColumn(label: Text('Image')),
           DataColumn(label: Text('Title')),
           DataColumn(label: Text('Actions')),
         ],
-        rows: List<DataRow>.generate(
-          data.length,
-              (index) => DataRow(
+        rows: data.map((category) {
+          return DataRow(
             cells: [
-              DataCell(Text(data[index]['id'] ?? '')),
-              DataCell(Text(data[index]['title'] ?? '')),
+              DataCell(
+                category['image'] != null 
+                ? Image.network(
+                    category['image'], // Utiliser l'URL de l'image
+                    width: 80, // Largeur fixe pour l'image
+                    height: 80, // Hauteur fixe pour l'image
+                    fit: BoxFit.cover, // Couvre l'espace de la cellule
+                  )
+                : Text('No Image') // Si pas d'image disponible
+              ),
+              DataCell(Text(category['title'] ?? '')),
               DataCell(Row(
                 children: [
                   IconButton(
                     icon: Icon(Icons.edit, color: Colors.green),
-                    onPressed: () {
-                      handleEdit(data[index]['id'].toString(), data[index]['title'].toString());
-                    },
+                    onPressed: () => handleEdit(category['id'] ?? '', category['title'] ?? ''),
+                    tooltip: 'Modifier une catégorie',
                   ),
                   IconButton(
                     icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      handleDelete(data[index]['id'].toString());
-                    },
+                    onPressed: () => handleDelete(category['id'] ?? ''),
+                    tooltip: 'Supprimer une catégorie',
                   ),
                 ],
               )),
             ],
-          ),
-        ),
+          );
+        }).toList(),
       ),
     );
   }

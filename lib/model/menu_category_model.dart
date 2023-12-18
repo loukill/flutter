@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
+
 class MenuCatModel {
-  String icon;
+  IconData icon;
   String title;
   MenuCatModel({required this.icon, required this.title});
 }

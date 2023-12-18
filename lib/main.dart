@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Color(0xFF171821),
           fontFamily: 'IBMPlexSans',
           brightness: Brightness.dark),
+          
       home: DashBoard(),
     );
   }
