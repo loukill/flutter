@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dashboard/model/menu_category_model.dart';
+import 'package:flutter_dashboard/pages/category/widgets/text_file.dart';
 import 'package:flutter_dashboard/responsive.dart';
 
 class MenuCat extends StatefulWidget {
@@ -50,6 +51,17 @@ class _MenuCatState extends State<MenuCat> {
       ),
     );
   }
+   void navigateToWidget(int index) {
+    switch (index) {
+      case 2: // Index pour 'Fichiers Texte'
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TextFilesWidget()),
+        );
+        break;
+      // Ajoutez d'autres cas pour d'autres éléments de menu si nécessaire
+    }
+  }
 
   Widget _buildMenuItem(MenuCatModel menuItem) {
     int index = menu.indexOf(menuItem);
@@ -59,6 +71,8 @@ class _MenuCatState extends State<MenuCat> {
           selected = index;
         });
         widget.scaffoldKey.currentState!.closeDrawer();
+
+        navigateToWidget(index);
         // Ajoutez ici la logique de navigation
       },
       child: Container(
