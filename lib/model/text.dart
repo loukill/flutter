@@ -12,12 +12,20 @@ class Texte {
     this.consultationsCount = 0,
   });
 
+    Texte.newText({
+    this.id = '',
+    required this.title,
+    required this.content,
+    this.consultationsCount = 0,
+  });
+
    factory Texte.fromJson(Map<String, dynamic> json) {
-    return Texte(
-      id: json['_id'],
-      title: json['title'],
-      content: json['contenu'],
-      consultationsCount: json['consultationsCount'] ?? 0,
-    );
-  }
+  return Texte(
+    id: json['_id'] ?? '',
+    title: json['title'] ?? 'Titre par défaut',
+    content: json['contenu'] ?? 'Contenu par défaut',
+    consultationsCount: json['consultationsCount'] ?? 0,
+  );
+}
+
 }

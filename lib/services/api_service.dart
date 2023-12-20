@@ -10,16 +10,17 @@ class ApiService {
   ApiService(this.baseUrl);
 
   Future<List<Texte>> getAllTextes() async {
-  final response = await http.get(Uri.parse('$baseUrl/text'));
+    final response = await http.get(Uri.parse('$baseUrl/text'));
 
-  if (response.statusCode == 200) {
-    List<dynamic> jsonData = json.decode(response.body);
-    return jsonData.map((item) => Texte.fromJson(item)).toList();
-  } else {
-    throw Exception('Failed to load textes');
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = json.decode(response.body);
+      return jsonData.map((item) => Texte.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load textes');
+    }
   }
-}
 
+/*
 Future<Texte> createTexte(Texte texte) async {
   final response = await http.post(
     Uri.parse('$baseUrl/text'),
@@ -39,8 +40,8 @@ Future<Texte> createTexte(Texte texte) async {
     throw Exception('Failed to create texte');
   }
 }
-
- Future<Texte> updateTexte(String texteId, Texte texte) async {
+*/
+  Future<Texte> updateTexte(String texteId, Texte texte) async {
     final response = await http.put(
       Uri.parse('$baseUrl/text/$texteId'),
       headers: <String, String>{
@@ -60,17 +61,17 @@ Future<Texte> createTexte(Texte texte) async {
     }
   }
 
-Future<void> deleteTexte(String id) async {
-  final response = await http.delete(
-    Uri.parse('$baseUrl/text/$id'),
-  );
+  Future<void> deleteTexte(String id) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/text/$id'),
+    );
 
-  if (response.statusCode != 200) {
-    throw Exception('Failed to delete texte');
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete texte');
+    }
   }
-}
 
-Future<List<TextConsultation>> getTextConsultations() async {
+  Future<List<TextConsultation>> getTextConsultations() async {
     final response = await http.get(Uri.parse('$baseUrl/consultations'));
 
     if (response.statusCode == 200) {
@@ -80,5 +81,31 @@ Future<List<TextConsultation>> getTextConsultations() async {
       throw Exception('Failed to load consultations');
     }
   }
+
+  Future<void> createText(Texte texte) async {
+  final url = Uri.parse('$baseUrl/text');
+
+  try {
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'title': texte.title,
+        'contenu': texte.content, // Utilisez ici 'contenu' au lieu de 'content'
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      print('Réponse du serveur: ${response.body}');
+    } else {
+      print('Échec de la création du texte: ${response.statusCode}');
+      print('Détails de l\'échec: ${response.body}');
+    }
+  } catch (e) {
+    print('Erreur lors de la création du texte: $e');
+  }
+}
 
 }

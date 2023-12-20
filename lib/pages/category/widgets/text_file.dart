@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dashboard/model/text.dart';
 import 'package:flutter_dashboard/model/text_consultation.dart';
+import 'package:flutter_dashboard/pages/category/widgets/new_text_page.dart';
 import 'package:flutter_dashboard/pages/category/widgets/text_edit_page.dart';
 import 'package:flutter_dashboard/services/api_service.dart';
 import 'package:flutter_dashboard/widgets/category/statistic_bar_chart.dart';
@@ -97,108 +98,135 @@ class _TextFilesWidgetState extends State<TextFilesWidget> {
     });
   }
 
+  void _addNewText() {
+    Navigator.of(context)
+        .push(
+      MaterialPageRoute(
+        builder: (context) => NewTextPage(apiService: apiService),
+      ),
+    )
+        .then((_) {
+      setState(() {
+        // Recharger la liste des textes après l'ajout
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Fichiers Texte'),
       ),
-      body: Row(children: [
-        Expanded(
-          flex:
-              2, // Ajustez ce paramètre selon la taille souhaitée du graphique dans le layout
-          child: Padding(
-            padding: const EdgeInsets.all(10), // Espace autour du graphique
-            child: FutureBuilder<List<Texte>>(
-              future: apiService.getAllTextes(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Erreur: ${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[800],
-                      borderRadius: BorderRadius.circular(18),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 4,
-                          offset: Offset(0, 3),
+      body: Stack(
+        children: [
+          Row(children: [
+            Expanded(
+              flex:
+                  2, // Ajustez ce paramètre selon la taille souhaitée du graphique dans le layout
+              child: Padding(
+                padding: const EdgeInsets.all(10), // Espace autour du graphique
+                child: FutureBuilder<List<Texte>>(
+                  future: apiService.getAllTextes(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Erreur: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          borderRadius: BorderRadius.circular(18),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 4,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: StatisticBarChart(textes: snapshot.data!),
-                    ),
-                  );
-                } else {
-                  return Center(child: Text('Aucun texte trouvé'));
-                }
-              },
-            ),
-          ),
-        ),
-        Expanded(
-            flex: 2,
-            child: FutureBuilder<List<Texte>>(
-              future: apiService.getAllTextes(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Erreur: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('Aucun texte trouvé'));
-                } else {
-                  return ListView.separated(
-                    itemCount: snapshot.data!.length,
-                    separatorBuilder: (context, index) =>
-                        Divider(color: Colors.grey),
-                    itemBuilder: (context, index) {
-                      var texte = snapshot.data![index];
-                      return Card(
-                        elevation: 4,
-                        margin: EdgeInsets.all(8),
-                        child: ListTile(
-                          title: Text(
-                            texte.title,
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(getExcerpt(texte.content)),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              IconButton(
-                                icon: Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () => _updateTexte(texte.id, texte),
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => _confirmDelete(texte.id),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            // Afficher le contenu complet du texte dans un AlertDialog, par exemple
-                          },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: StatisticBarChart(textes: snapshot.data!),
                         ),
                       );
-                    },
-                  );
-                }
-              },
-            )),
-      ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Logique pour le bouton 'Plus' ici
-        },
-        child: Icon(Icons.add),
+                    } else {
+                      return Center(child: Text('Aucun texte trouvé'));
+                    }
+                  },
+                ),
+              ),
+            ),
+            Expanded(
+                flex: 2,
+                child: FutureBuilder<List<Texte>>(
+                  future: apiService.getAllTextes(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Erreur: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('Aucun texte trouvé'));
+                    } else {
+                      return Padding(
+                          padding: EdgeInsets.only(bottom: 80.0),
+                          child: ListView.separated(
+                            itemCount: snapshot.data!.length,
+                            separatorBuilder: (context, index) =>
+                                Divider(color: Colors.grey),
+                            itemBuilder: (context, index) {
+                              var texte = snapshot.data![index];
+                              return Card(
+                                elevation: 4,
+                                margin: EdgeInsets.all(8),
+                                child: ListTile(
+                                  title: Text(
+                                    texte.title,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Text(getExcerpt(texte.content)),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      IconButton(
+                                        icon: Icon(Icons.edit,
+                                            color: Colors.blue),
+                                        onPressed: () =>
+                                            _updateTexte(texte.id, texte),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete,
+                                            color: Colors.red),
+                                        onPressed: () =>
+                                            _confirmDelete(texte.id),
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    // Afficher le contenu complet du texte dans un AlertDialog, par exemple
+                                  },
+                                ),
+                              );
+                            },
+                          ));
+                    }
+                  },
+                )),
+          ]),
+          Positioned(
+            bottom: 16.0,
+            right: 16.0,
+            child: FloatingActionButton(
+              onPressed: _addNewText,
+              child: Icon(Icons.add),
+            ),
+          ),
+        ],
       ),
     );
   }
