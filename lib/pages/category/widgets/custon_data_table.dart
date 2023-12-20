@@ -112,7 +112,7 @@ class _CustomDataTableState extends State<CustomDataTable> {
               DataCell(Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.edit, color: Colors.green),
+                    icon: Icon(Icons.edit, color: Colors.blue),
                     onPressed: () => handleEdit(category['id'] ?? '', category['title'] ?? ''),
                     tooltip: 'Modifier une catégorie',
                   ),

@@ -21,9 +21,6 @@ class _HomePageCatState extends State<HomePageCat> {
     });
   }
 
-  
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +34,7 @@ class _HomePageCatState extends State<HomePageCat> {
               SizedBox(height: Responsive.isMobile(context) ? 5 : 18),
               Text(
                 "Category Management", 
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
               SizedBox(height: Responsive.isDesktop(context) ? 30 : 20),
               Card(
