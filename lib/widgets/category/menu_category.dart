@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dashboard/model/menu_category_model.dart';
+import 'package:flutter_dashboard/pages/category/widgets/game_widget.dart';
 import 'package:flutter_dashboard/pages/category/widgets/text_file.dart';
+import 'package:flutter_dashboard/pages/category/widgets/tic_tac_score.dart';
 import 'package:flutter_dashboard/responsive.dart';
 
 class MenuCat extends StatefulWidget {
@@ -15,9 +17,9 @@ class MenuCat extends StatefulWidget {
 class _MenuCatState extends State<MenuCat> {
   List<MenuCatModel> menu = [
     MenuCatModel(icon: Icons.dashboard, title: 'Tableau de Bord'), // Remplacé avec Icons.dashboard
-    MenuCatModel(icon: Icons.games, title: 'Jeux'), // Remplacé avec Icons.games
+    MenuCatModel(icon: Icons.games, title: 'Simon Dit'), // Remplacé avec Icons.games
     MenuCatModel(icon: Icons.description, title: 'Fichiers Texte'), // Remplacé avec Icons.description
-    MenuCatModel(icon: Icons.bar_chart, title: 'Statistiques'), // Remplacé avec Icons.bar_chart
+    MenuCatModel(icon: Icons.bar_chart, title: 'Tic Tac Toe'), // Remplacé avec Icons.bar_chart
     MenuCatModel(icon: Icons.exit_to_app, title: 'Déconnexion'), // Remplacé avec Icons.exit_to_app
   ];
 
@@ -53,10 +55,22 @@ class _MenuCatState extends State<MenuCat> {
   }
    void navigateToWidget(int index) {
     switch (index) {
+    case 1: // Index pour 'Jeux'
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => GamesWidget()),
+      );
+      break;
       case 2: // Index pour 'Fichiers Texte'
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => TextFilesWidget()),
+        );
+        break;
+        case 3: // Index pour 'Fichiers Texte'
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TicTacScoresWidget()),
         );
         break;
       // Ajoutez d'autres cas pour d'autres éléments de menu si nécessaire

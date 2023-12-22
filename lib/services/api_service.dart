@@ -1,6 +1,8 @@
 import 'dart:typed_data';
+import 'package:flutter_dashboard/model/score_tic_tac.dart';
 import 'package:flutter_dashboard/model/text.dart';
 import 'package:flutter_dashboard/model/text_consultation.dart';
+import 'package:flutter_dashboard/model/score_data.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -20,27 +22,6 @@ class ApiService {
     }
   }
 
-/*
-Future<Texte> createTexte(Texte texte) async {
-  final response = await http.post(
-    Uri.parse('$baseUrl/text'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode({
-      'title': texte.title,
-      'content': texte.content,
-      // Ajoutez d'autres champs si nécessaire
-    }),
-  );
-
-  if (response.statusCode == 201) {
-    return Texte.fromJson(json.decode(response.body));
-  } else {
-    throw Exception('Failed to create texte');
-  }
-}
-*/
   Future<Texte> updateTexte(String texteId, Texte texte) async {
     final response = await http.put(
       Uri.parse('$baseUrl/text/$texteId'),
@@ -107,5 +88,59 @@ Future<Texte> createTexte(Texte texte) async {
     print('Erreur lors de la création du texte: $e');
   }
 }
+
+Future<void> addScore(String username, double score, [DateTime? date]) async {
+  final uri = Uri.parse('$baseUrl/score'); // Remplacez par l'URL de votre serveur
+  final response = await http.post(
+    uri,
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode({
+      'username': username,
+      'score': score,
+      'date': date?.toIso8601String() ?? DateTime.now().toIso8601String(),
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    // Gérer la réponse du serveur
+    print('Score ajouté avec succès');
+  } else {
+    throw Exception('Erreur lors de l’ajout du score');
+  }
+}
+
+Future<List<ScoreData>> getScores() async {
+  final uri = Uri.parse('$baseUrl/score'); // Remplacez par l'URL de votre serveur
+  final response = await http.get(uri);
+
+  if (response.statusCode == 200) {
+    List<dynamic> scoresJson = json.decode(response.body)['data']['scores'];
+    return scoresJson.map((json) => ScoreData.fromJson(json)).toList();
+  } else {
+    throw Exception('Erreur lors de la récupération des scores');
+  }
+}
+
+Future<List<ScoreTicTac>> fetchScores() async {
+  try {
+    final uri = Uri.parse('$baseUrl/ticTac');
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonData = json.decode(response.body);
+      if (jsonData['data'] != null && jsonData['data']['scores'] != null) {
+        final scoresList = jsonData['data']['scores'] as List;
+        return scoresList.map((json) => ScoreTicTac.fromJson(json)).toList();
+      } else {
+        throw Exception('Données manquantes dans la réponse');
+      }
+    } else {
+      throw Exception('Échec de la requête : ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('Erreur lors de la connexion au serveur : $e');
+  }
+}
+
 
 }

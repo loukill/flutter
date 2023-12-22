@@ -123,7 +123,7 @@ class _TextFilesWidgetState extends State<TextFilesWidget> {
           Row(children: [
             Expanded(
               flex:
-                  2, // Ajustez ce paramètre selon la taille souhaitée du graphique dans le layout
+                  1, // Ajustez ce paramètre selon la taille souhaitée du graphique dans le layout
               child: Padding(
                 padding: const EdgeInsets.all(10), // Espace autour du graphique
                 child: FutureBuilder<List<Texte>>(
@@ -160,7 +160,7 @@ class _TextFilesWidgetState extends State<TextFilesWidget> {
               ),
             ),
             Expanded(
-                flex: 2,
+                flex: 3,
                 child: FutureBuilder<List<Texte>>(
                   future: apiService.getAllTextes(),
                   builder: (context, snapshot) {
