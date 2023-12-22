@@ -19,7 +19,7 @@ class _MenuCatState extends State<MenuCat> {
     MenuCatModel(icon: Icons.dashboard, title: 'Tableau de Bord'), // Remplacé avec Icons.dashboard
     MenuCatModel(icon: Icons.games, title: 'Simon Dit'), // Remplacé avec Icons.games
     MenuCatModel(icon: Icons.description, title: 'Fichiers Texte'), // Remplacé avec Icons.description
-    MenuCatModel(icon: Icons.bar_chart, title: 'Tic Tac Toe'), // Remplacé avec Icons.bar_chart
+    MenuCatModel(icon: Icons.games, title: 'Tic Tac Toe'), // Remplacé avec Icons.bar_chart
     MenuCatModel(icon: Icons.exit_to_app, title: 'Déconnexion'), // Remplacé avec Icons.exit_to_app
   ];
 

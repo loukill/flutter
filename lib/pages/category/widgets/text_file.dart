@@ -4,6 +4,7 @@ import 'package:flutter_dashboard/model/text.dart';
 import 'package:flutter_dashboard/model/text_consultation.dart';
 import 'package:flutter_dashboard/pages/category/widgets/new_text_page.dart';
 import 'package:flutter_dashboard/pages/category/widgets/text_edit_page.dart';
+import 'package:flutter_dashboard/pages/home/widgets/text_search.dart';
 import 'package:flutter_dashboard/services/api_service.dart';
 import 'package:flutter_dashboard/widgets/category/statistic_bar_chart.dart';
 
@@ -14,6 +15,9 @@ class TextFilesWidget extends StatefulWidget {
 
 class _TextFilesWidgetState extends State<TextFilesWidget> {
   late ApiService apiService;
+  TextEditingController searchController = TextEditingController();
+  List<Texte> allTextes = [];
+  List<Texte> filteredTextes = [];
 
   Future<List<BarChartGroupData>> _getBarGroups() async {
     List<TextConsultation> consultations =
@@ -36,6 +40,25 @@ class _TextFilesWidgetState extends State<TextFilesWidget> {
   void initState() {
     super.initState();
     apiService = ApiService('http://localhost:3000');
+    _loadTextes();
+  }
+
+  void _loadTextes() async {
+    var texts = await apiService.getAllTextes();
+    setState(() {
+      allTextes = texts;
+      filteredTextes = texts;
+    });
+  }
+
+  void _searchText(String query) {
+    var filteredList = allTextes.where((texte) {
+      return texte.title.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    setState(() {
+      filteredTextes = filteredList;
+    });
   }
 
   String getExcerpt(String content, {int maxLength = 100}) {
@@ -112,122 +135,115 @@ class _TextFilesWidgetState extends State<TextFilesWidget> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Fichiers Texte'),
-      ),
-      body: Stack(
-        children: [
-          Row(children: [
-            Expanded(
-              flex:
-                  1, // Ajustez ce paramètre selon la taille souhaitée du graphique dans le layout
-              child: Padding(
-                padding: const EdgeInsets.all(10), // Espace autour du graphique
-                child: FutureBuilder<List<Texte>>(
-                  future: apiService.getAllTextes(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Erreur: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey[800],
-                          borderRadius: BorderRadius.circular(18),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.3),
-                              spreadRadius: 2,
-                              blurRadius: 4,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: StatisticBarChart(textes: snapshot.data!),
-                        ),
-                      );
-                    } else {
-                      return Center(child: Text('Aucun texte trouvé'));
-                    }
-                  },
-                ),
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Fichiers Texte'),
+    ),
+    body: Stack(
+      children: [
+        Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        labelText: 'Recherche',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: _searchText,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () => _searchText(searchController.text),
+                  ),
+                ],
               ),
             ),
             Expanded(
-                flex: 3,
-                child: FutureBuilder<List<Texte>>(
-                  future: apiService.getAllTextes(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Erreur: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(child: Text('Aucun texte trouvé'));
-                    } else {
-                      return Padding(
-                          padding: EdgeInsets.only(bottom: 80.0),
-                          child: ListView.separated(
-                            itemCount: snapshot.data!.length,
-                            separatorBuilder: (context, index) =>
-                                Divider(color: Colors.grey),
-                            itemBuilder: (context, index) {
-                              var texte = snapshot.data![index];
-                              return Card(
-                                elevation: 4,
-                                margin: EdgeInsets.all(8),
-                                child: ListTile(
-                                  title: Text(
-                                    texte.title,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: Text(getExcerpt(texte.content)),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      IconButton(
-                                        icon: Icon(Icons.edit,
-                                            color: Colors.blue),
-                                        onPressed: () =>
-                                            _updateTexte(texte.id, texte),
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons.delete,
-                                            color: Colors.red),
-                                        onPressed: () =>
-                                            _confirmDelete(texte.id),
-                                      ),
-                                    ],
-                                  ),
-                                  onTap: () {
-                                    // Afficher le contenu complet du texte dans un AlertDialog, par exemple
-                                  },
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 2, // Taille du graphique
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: FutureBuilder<List<Texte>>(
+                        future: apiService.getAllTextes(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text('Erreur: ${snapshot.error}'));
+                          } else if (snapshot.hasData) {
+                            return StatisticBarChart(textes: snapshot.data!); // Assurez-vous que snapshot.data est une List<Texte>
+                          } else {
+                            return Center(child: Text('Aucune donnée disponible'));
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3, // Taille de la liste de textes
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 80),
+                    child: ListView.separated(
+                      itemCount: filteredTextes.length,
+                      separatorBuilder: (context, index) => Divider(color: Colors.grey),
+                      itemBuilder: (context, index) {
+                        var texte = filteredTextes[index];
+                        return Card(
+                          elevation: 4,
+                          margin: EdgeInsets.all(8),
+                          child: ListTile(
+                            title: Text(
+                              texte.title,
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(getExcerpt(texte.content)),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                IconButton(
+                                  icon: Icon(Icons.edit, color: Colors.blue),
+                                  onPressed: () => _updateTexte(texte.id, texte),
                                 ),
-                              );
+                                IconButton(
+                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  onPressed: () => _confirmDelete(texte.id),
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              // Action lors du tap sur un élément
                             },
-                          ));
-                    }
-                  },
-                )),
-          ]),
-          Positioned(
-            bottom: 16.0,
-            right: 16.0,
-            child: FloatingActionButton(
-              onPressed: _addNewText,
-              child: Icon(Icons.add),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                  ),
+                ],
+              ),
             ),
+          ],
+        ),
+        Positioned(
+          bottom: 16.0,
+          right: 16.0,
+          child: FloatingActionButton(
+            onPressed: _addNewText,
+            child: Icon(Icons.add),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 }
