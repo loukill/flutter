@@ -7,10 +7,9 @@ import 'package:flutter_dashboard/dashboard.dart';
 import 'package:flutter_dashboard/pages/home/list_user.dart';
 import 'package:flutter_dashboard/components/already_have_an_account_acheck.dart';
 
-
 import '../../constants.dart';
 
-import '/services/userservice.dart'; // Make sure this import points to your UserService file
+import '/services/userservice.dart';
 
 class LoginForm extends StatefulWidget {
   final UserService userService;
@@ -28,6 +27,8 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  bool isPasswordVisible = false;
+
   Future<void> login() async {
     try {
       await widget.userService.loginUser(
@@ -37,11 +38,10 @@ class _LoginFormState extends State<LoginForm> {
 
       // Navigate to the home screen after successful login
       // Replace with your home screen navigation logic
-        Navigator.pushReplacement(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => DashBoard()),
       );
-    
     } catch (error) {
       // Handle login error (show a snackbar, display an error message, etc.)
       print('Login failed: $error');
@@ -71,19 +71,29 @@ class _LoginFormState extends State<LoginForm> {
             child: TextFormField(
               controller: passwordController,
               textInputAction: TextInputAction.done,
-              obscureText: true,
+              obscureText: !isPasswordVisible,
               cursorColor: kPrimaryColor,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Your Password",
                 prefixIcon: Padding(
                   padding: EdgeInsets.all(defaultPadding),
                   child: Icon(Icons.lock),
                 ),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    isPasswordVisible
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isPasswordVisible = !isPasswordVisible;
+                    });
+                  },
+                ),
               ),
             ),
-          ), 
-          
-          
+          ),
           const SizedBox(height: defaultPadding),
           ElevatedButton(
             onPressed: login,
@@ -96,14 +106,14 @@ class _LoginFormState extends State<LoginForm> {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return SignUpScreen(userService: widget.userService); // Pass the instance of UserService
+                    return SignUpScreen(
+                        userService: widget.userService); // Pass the instance of UserService
                   },
                 ),
               );
             },
-            
           ),
-           // Intégration de la Row dans le widget LoginForm
+          // Intégration de la Row dans le widget LoginForm
           Container(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -113,7 +123,7 @@ class _LoginFormState extends State<LoginForm> {
                   child: GestureDetector(
                     onTap: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>ForgetCodePage()),
+                      MaterialPageRoute(builder: (context) => ForgetCodePage()),
                     ),
                     child: const Text(
                       'Forget password?',
@@ -125,13 +135,13 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ),
                 ),
-                
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       CupertinoPageRoute(
-                        builder: (context) => SignUpForm(userService: widget.userService),
+                        builder: (context) =>
+                            SignUpForm(userService: widget.userService),
                       ),
                     );
                   },
@@ -147,6 +157,4 @@ class _LoginFormState extends State<LoginForm> {
       ),
     );
   }
-  
 }
-

@@ -103,7 +103,7 @@ class _ForgetPasswordPageState extends State<ForgetCodePageP>
                                         )),
                               ),
                               child: const Text(
-                                'Back to login',
+                                '',
                                 style: TextStyle(
                                   fontSize: 23,
                                   color: Color.fromARGB(255, 95, 140, 83),

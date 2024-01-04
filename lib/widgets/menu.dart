@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dashboard/Responsive.dart';
 import 'package:flutter_dashboard/model/menu_modal.dart';
+import 'package:flutter_dashboard/screens/product_list.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_dashboard/pages/category/category_dashboard.dart';
 
@@ -18,7 +19,7 @@ class _MenuState extends State<Menu> {
     MenuModel(icon: 'assets/svg/home.svg', title: "Dashboard"),
     MenuModel(icon: 'assets/svg/profile.svg', title: "Profile"),
     MenuModel(icon: 'assets/svg/exercise.svg', title: "Activity"),
-    MenuModel(icon: 'assets/svg/setting.svg', title: "Settings"),
+    MenuModel(icon: 'assets/svg/setting.svg', title: "Product"),
     MenuModel(icon: 'assets/svg/history.svg', title: "History"),
     MenuModel(icon: 'assets/svg/signout.svg', title: "Signout"),
   ];
@@ -56,20 +57,25 @@ class _MenuState extends State<Menu> {
   Widget buildMenuItem(int i) {
     return InkWell(
       onTap: () {
-        if (menu[i].title == "Activity") {
-          // Naviguer vers la page d'activité
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CategoryDashboard()), // Remplacez ActivityPage() par la page vers laquelle vous souhaitez naviguer
-          );
-          widget.scaffoldKey.currentState!.closeDrawer();
-        } else {
-          setState(() {
-            selected = i;
-          });
-          widget.scaffoldKey.currentState!.closeDrawer();
-        }
-      },
+  if (menu[i].title == "Activity") {
+    // Naviguer vers la page d'activité
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CategoryDashboard()), // Remplacez par la page d'activité
+    );
+  } else if (menu[i].title == "Product") {
+    // Naviguer vers la page de produit
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProductListScreen()), // Remplacez ProductPage() par la page de produit
+    );
+  } else {
+    setState(() {
+      selected = i;
+    });
+  }
+  widget.scaffoldKey.currentState!.closeDrawer();
+},
       child: Container(
         width: MediaQuery.of(context).size.width,
         margin: const EdgeInsets.symmetric(vertical: 5),

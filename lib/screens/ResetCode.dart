@@ -15,12 +15,14 @@ class RestCodePage extends StatefulWidget {
   State<RestCodePage> createState() => _RestCodePageState();
 }
 
-class _RestCodePageState extends State<RestCodePage> with SingleTickerProviderStateMixin {
+class _RestCodePageState extends State<RestCodePage>
+    with SingleTickerProviderStateMixin {
   final _forgetPasswordFormKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _CpasswordController = TextEditingController();
   late AnimationController _animationController;
   late Animation<double> _animation;
+  bool isPasswordVisible = false;
 
   @override
   void initState() {
@@ -61,18 +63,33 @@ class _RestCodePageState extends State<RestCodePage> with SingleTickerProviderSt
                     child: Form(
                       key: _forgetPasswordFormKey,
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: screenWidth * 0.1),
                         child: Column(
                           children: [
                             SizedBox(height: screenHeight * 0.02),
                             TextFormField(
                               controller: _passwordController,
-                              obscureText: true,
-                              decoration: const InputDecoration(
+                              obscureText: !isPasswordVisible,
+                              decoration: InputDecoration(
                                 prefixIcon: Icon(Icons.lock),
                                 hintText: 'Enter your password',
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15)),
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    isPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      isPasswordVisible =
+                                          !isPasswordVisible;
+                                    });
+                                  },
                                 ),
                               ),
                               validator: (value) {
@@ -89,7 +106,8 @@ class _RestCodePageState extends State<RestCodePage> with SingleTickerProviderSt
                                 prefixIcon: Icon(Icons.lock),
                                 hintText: 'Enter your new confirm password',
                                 border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15)),
                                 ),
                               ),
                               validator: (value) {
@@ -135,7 +153,6 @@ class _RestCodePageState extends State<RestCodePage> with SingleTickerProviderSt
             builder: (context) => LoginScreen(),
           ),
         );
-
       } catch (error) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
