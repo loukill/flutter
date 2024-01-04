@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dashboard/pages/home/home_page.dart';
+import 'package:flutter_dashboard/service/forumservice.dart';
 import 'package:flutter_dashboard/widgets/menu.dart';
 import 'package:flutter_dashboard/Responsive.dart';
 import 'package:flutter_dashboard/widgets/profile/profile.dart';
 
 class DashBoard extends StatelessWidget {
-  DashBoard({super.key});
+  final ForumService forumService;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
 
-  @override
+   DashBoard({required this.forumService}); @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,

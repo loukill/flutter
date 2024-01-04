@@ -13,10 +13,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  image_picker: ^0.8.4
   cupertino_icons: ^1.0.2
   flutter_svg: ^2.0.5
   fl_chart: ^0.62.0
+  http: ^1.1.0
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dashboard/Responsive.dart';
 import 'package:flutter_dashboard/model/menu_modal.dart';
+import 'package:flutter_dashboard/pages/forum/forum_list.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Menu extends StatefulWidget {
@@ -17,6 +18,7 @@ class _MenuState extends State<Menu> {
     MenuModel(icon: 'assets/svg/home.svg', title: "Dashboard"),
     MenuModel(icon: 'assets/svg/profile.svg', title: "Profile"),
     MenuModel(icon: 'assets/svg/exercise.svg', title: "Exercise"),
+    MenuModel(icon: 'assets/svg/forum.svg', title: "Forum"),
     MenuModel(icon: 'assets/svg/setting.svg', title: "Settings"),
     MenuModel(icon: 'assets/svg/history.svg', title: "History"),
     MenuModel(icon: 'assets/svg/signout.svg', title: "Signout"),
@@ -58,12 +60,20 @@ class _MenuState extends State<Menu> {
                 ),
                 child: InkWell(
                   onTap: () {
-                    setState(() {
-                      selected = i;
-                    });
-                    widget.scaffoldKey.currentState!.closeDrawer();
-                  },
-                  child: Row(
+        if (menu[i].title == "Forum") {
+          // Naviguer vers la page d'activité
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ForumList()), // Remplacez ActivityPage() par la page vers laquelle vous souhaitez naviguer
+          );
+          widget.scaffoldKey.currentState!.closeDrawer();
+        } else {
+          setState(() {
+            selected = i;
+          });
+          widget.scaffoldKey.currentState!.closeDrawer();
+        }
+      },child: Row(
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(

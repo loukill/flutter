@@ -4,11 +4,13 @@ import 'package:flutter_dashboard/responsive.dart';
 
 class Header extends StatelessWidget {
   const Header({
-    super.key,
+    Key? key,
     required this.scaffoldKey,
-  });
+    required this.onForumPressed,
+  }) : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final Function()? onForumPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +24,8 @@ class Header extends StatelessWidget {
               padding: const EdgeInsets.only(right: 20),
               child: InkWell(
                 onTap: () => scaffoldKey.currentState!.openDrawer(),
-                child: const Padding(
-                  padding: EdgeInsets.all(3.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
                   child: Icon(
                     Icons.menu,
                     color: Colors.grey,
@@ -37,28 +39,8 @@ class Header extends StatelessWidget {
               flex: 4,
               child: TextField(
                 decoration: InputDecoration(
-                    filled: true,
-                    fillColor: cardBackgroundColor,
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.transparent),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                      borderSide:
-                          BorderSide(color: Theme.of(context).primaryColor),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 5,
-                    ),
-                    hintText: 'Search',
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                      size: 21,
-                    )),
+                  // ... (votre décoration de recherche)
+                ),
               ),
             ),
           if (Responsive.isMobile(context))
@@ -71,18 +53,20 @@ class Header extends StatelessWidget {
                     color: Colors.grey,
                     size: 25,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    // Logique de recherche
+                  },
                 ),
                 InkWell(
-                  onTap: () => scaffoldKey.currentState!.openEndDrawer(),
+                  onTap: onForumPressed,
                   child: CircleAvatar(
                     backgroundColor: Colors.transparent,
                     child: Image.asset(
-                      "assets/images/avatar.png",
+                      "assets/images/avatar.png", // Assurez-vous d'avoir le bon chemin d'accès à l'image
                       width: 32,
                     ),
                   ),
-                )
+                ),
               ],
             ),
         ],
