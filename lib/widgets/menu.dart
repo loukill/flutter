@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dashboard/Responsive.dart';
 import 'package:flutter_dashboard/model/menu_modal.dart';
 import 'package:flutter_dashboard/screens/product_list.dart';
+import 'package:flutter_dashboard/widgets/bibliotheque/artical_form.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_dashboard/pages/category/category_dashboard.dart';
 
@@ -20,7 +21,7 @@ class _MenuState extends State<Menu> {
     MenuModel(icon: 'assets/svg/profile.svg', title: "Profile"),
     MenuModel(icon: 'assets/svg/exercise.svg', title: "Activity"),
     MenuModel(icon: 'assets/svg/setting.svg', title: "Product"),
-    MenuModel(icon: 'assets/svg/history.svg', title: "History"),
+    MenuModel(icon: 'assets/svg/history.svg', title: "Bibliotheque"),
     MenuModel(icon: 'assets/svg/signout.svg', title: "Signout"),
   ];
 
@@ -69,7 +70,14 @@ class _MenuState extends State<Menu> {
       context,
       MaterialPageRoute(builder: (context) => ProductListScreen()), // Remplacez ProductPage() par la page de produit
     );
-  } else {
+  } else if (menu[i].title == "Bibliotheque") {
+    // Naviguer vers la page de produit
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ArticleForm()), // Remplacez ProductPage() par la page de produit
+    );
+  } 
+  else {
     setState(() {
       selected = i;
     });
