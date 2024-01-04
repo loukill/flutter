@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dashboard/pages/home/home_page.dart';
+import 'package:flutter_dashboard/pages/home/list_user.dart';
 import 'package:flutter_dashboard/widgets/menu.dart';
 import 'package:flutter_dashboard/Responsive.dart';
 import 'package:flutter_dashboard/widgets/profile/profile.dart';
@@ -28,12 +28,7 @@ class DashBoard extends StatelessWidget {
                       height: MediaQuery.of(context).size.height,
                       child: Menu(scaffoldKey: _scaffoldKey)),
                 ),
-              Expanded(flex: 8, child: HomePage(scaffoldKey: _scaffoldKey)),
-              if (!Responsive.isMobile(context))
-                const Expanded(
-                  flex: 4,
-                  child: Profile(),
-                ),
+              Expanded(flex: 8, child: UserListView()),
             ],
           ),
         ));
