@@ -1,4 +1,5 @@
 # This is a generated file; do not edit or check into version control.
+connectivity_plus=/Users/medloukil/.pub-cache/hosted/pub.dev/connectivity_plus-3.0.6/
 file_selector_linux=/Users/medloukil/.pub-cache/hosted/pub.dev/file_selector_linux-0.9.2+1/
 file_selector_macos=/Users/medloukil/.pub-cache/hosted/pub.dev/file_selector_macos-0.9.3+3/
 file_selector_windows=/Users/medloukil/.pub-cache/hosted/pub.dev/file_selector_windows-0.9.3+1/
@@ -10,3 +11,15 @@ image_picker_ios=/Users/medloukil/.pub-cache/hosted/pub.dev/image_picker_ios-0.8
 image_picker_linux=/Users/medloukil/.pub-cache/hosted/pub.dev/image_picker_linux-0.2.1+1/
 image_picker_macos=/Users/medloukil/.pub-cache/hosted/pub.dev/image_picker_macos-0.2.1+1/
 image_picker_windows=/Users/medloukil/.pub-cache/hosted/pub.dev/image_picker_windows-0.2.1+1/
+package_info_plus=/Users/medloukil/.pub-cache/hosted/pub.dev/package_info_plus-4.2.0/
+path_provider=/Users/medloukil/.pub-cache/hosted/pub.dev/path_provider-2.1.1/
+path_provider_android=/Users/medloukil/.pub-cache/hosted/pub.dev/path_provider_android-2.2.2/
+path_provider_foundation=/Users/medloukil/.pub-cache/hosted/pub.dev/path_provider_foundation-2.3.1/
+path_provider_linux=/Users/medloukil/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
+path_provider_windows=/Users/medloukil/.pub-cache/hosted/pub.dev/path_provider_windows-2.2.1/
+shared_preferences=/Users/medloukil/.pub-cache/hosted/pub.dev/shared_preferences-2.2.2/
+shared_preferences_android=/Users/medloukil/.pub-cache/hosted/pub.dev/shared_preferences_android-2.2.1/
+shared_preferences_foundation=/Users/medloukil/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.3.4/
+shared_preferences_linux=/Users/medloukil/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.3.2/
+shared_preferences_web=/Users/medloukil/.pub-cache/hosted/pub.dev/shared_preferences_web-2.2.2/
+shared_preferences_windows=/Users/medloukil/.pub-cache/hosted/pub.dev/shared_preferences_windows-2.3.2/

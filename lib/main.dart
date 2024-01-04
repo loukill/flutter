@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dashboard/const.dart';
 import 'package:flutter_dashboard/dashboard.dart';
+import 'package:flutter_dashboard/screens/Welcome/welcome_screen.dart';
+import 'package:flutter_dashboard/services/userservice.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  UserService userService = UserService();
+  runApp(MyApp(userService: userService));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final UserService userService;
+  const MyApp({Key? key, required this.userService}) : super(key: key);
+  
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,7 @@ class MyApp extends StatelessWidget {
           fontFamily: 'IBMPlexSans',
           brightness: Brightness.dark),
           
-      home: DashBoard(),
+      home: WelcomeScreen(userService: userService),
     );
   }
 }
